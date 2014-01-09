@@ -57,9 +57,9 @@ plotPower <- function(pwrFrame,guides=TRUE,cutoff=.8){
 		p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,group=effectSize,geom="line")
 		if(guides==TRUE){
 			p <- p + geom_hline(yintercept=cutoff,linetype=2)
-			p <- p + annotate(x=-20,y=cutoff,geom="text",label=as.character(cutoff))
+			p <- p + annotate(x=-20,y=cutoff,geom="text",label=as.character(cutoff),angle=45)
 			p <- p + geom_vline(xintercept = getXIntercepts(pwrFrame,cutoff),linetype=2)
-			p <- p + annotate(x=getXIntercepts(pwrFrame,cutoff),geom="text",label=as.character(getXIntercepts(pwrFrame,.8)),y=.1,angle=45)
+			p <- p + annotate(x=getXIntercepts(pwrFrame,cutoff),geom="text",label=as.character(getXIntercepts(pwrFrame,cutoff)),y=.1,angle=45)
 		}
 	}
 	else{
