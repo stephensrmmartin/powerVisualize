@@ -1,3 +1,7 @@
 Clean-up code.
 Get rid of any redundancies.
 Add logic for error-checking
+Add pwrArray generators for other effect-sizes (e.g., d, r)
+Add aliases for small/medium/large effect sizes? Use fxn in pwr::
+
+Documentation
