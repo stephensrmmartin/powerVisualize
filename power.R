@@ -5,8 +5,8 @@ require(ggplot2)
 require(pwr)
 
 #Creates array of power values given effectsize-df pairs (power of .03 with 50; .03 with 51, etc)
-genPwrArray <- function(effectSizes,dfs,dfNumerator,sig.level=.05){
-	pwr <- pwr.f2.test(u=dfNumerator,v=dfs,f2=effectSizes,sig.level=sig.level,power=NULL)$power
+genPwrArray <- function(explodedEff,explodedDfs,dfNumerator,sig.level=.05){
+	pwr <- pwr.f2.test(u=dfNumerator,v=explodedDfs,f2=explodedEff,sig.level=sig.level,power=NULL)$power
 	return(pwr)
 }
 
@@ -38,18 +38,35 @@ createPwrFrame <- function(effectSizes,dfs,dfNumerator=4,sig.level=.05){
 	ds <- data.frame(effectSize=effects,df=dfs,power=pwr)
 	return(ds)	
 }
+#Takes a pwrFrame and cutoff value.
+#Splits the frame by effect size,
+#returns the first value of x that intersects with the given y-intercept
+getXIntercepts <- function(pwrFrame,cutoff){
+	require(plyr)
+	daply(.data=pwrFrame,.(effectSize),.fun=function(x){
+		return(x[x$power >= cutoff & x$power <= (cutoff + .01),"df"][1])
+	})
+}
 
 #Plots the power data.frame generated from createPwrFrame()
 #Will treat effectSize as factor if fewer than 8 effectsizes are given
 #Otherwise, the whole thing is a scatterplot.
-plotPower <- function(pwrFrame){
+plotPower <- function(pwrFrame,guides=TRUE,cutoff=.8){
 	if(length(unique(pwrFrame$effectSize)) < 8){
 		pwrFrame$effectSize <- factor(pwrFrame$effectSize)
 		p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,group=effectSize,geom="line")
+		if(guides==TRUE){
+			p <- p + geom_hline(yintercept=cutoff,linetype=2)
+			p <- p + annotate(x=-20,y=cutoff,geom="text",label=as.character(cutoff))
+			p <- p + geom_vline(xintercept = getXIntercepts(pwrFrame,cutoff),linetype=2)
+			p <- p + annotate(x=getXIntercepts(pwrFrame,cutoff),geom="text",label=as.character(getXIntercepts(pwrFrame,.8)),y=.1)
+		}
 	}
 	else{
 		p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,geom="point") + scale_color_gradient2(low='red',mid='blue',high='black')
 	}
+	p <- p + theme_classic()
+	p <- p + labs(x="Degrees of freedom",y='Power',title='Power Analysis',colour='Effect Size')
 	return(p)
 
 }
