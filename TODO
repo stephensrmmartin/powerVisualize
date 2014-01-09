@@ -3,5 +3,11 @@ Get rid of any redundancies.
 Add logic for error-checking
 Add pwrArray generators for other effect-sizes (e.g., d, r)
 Add aliases for small/medium/large effect sizes? Use fxn in pwr::
+Add ability to specify max sample size rather than just a range (e.g., 500 -> seq(1,500,1)
+Add ability to overlay the standard small/medium/large effect sizes on the final plot
+
+Add table output with some power values
+
+Add ability to only plot one's expected effect size, with the overlay of cohen's ES's
 
 Documentation
