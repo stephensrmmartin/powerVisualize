@@ -88,15 +88,16 @@ addDfGuide <- function(powerPlot,power,pwrFrame){
 ##v2: Removed scatterplot, because it's useless.
 ##: Will take either a power value and give dfs, or dfs and give power values
 plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
-	if(length(unique(pwrFrame$effectSize)) < 8){
-		pwrFrame$effectSize <- factor(pwrFrame$effectSize)
-		p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,group=effectSize,geom="line")
-		if(guides==TRUE & !is.null(power)){
-			p <- addDfGuide(p,power,pwrFrame)
+	pwrFrame$effectSize <- factor(pwrFrame$effectSize)
+	p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,group=effectSize,geom="line")
+	if(guides==TRUE){
+		if(!is.null(power)){
+		p <- addDfGuide(p,power,pwrFrame)
 		}
-	}
-	else{
-		p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,geom="point") + scale_color_gradient2(low='red',mid='blue',high='black')
+		else if(!is.null(df)){
+			stop("Not yet implemented")
+		#p <- addPowerGuide(p,df,pwrFrame)
+		}
 	}
 	p <- p + theme_classic()
 	p <- p + labs(x="Degrees of freedom",y='Power',title='Power Analysis',colour='Effect Size')
