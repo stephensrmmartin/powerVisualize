@@ -58,19 +58,25 @@ createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,t
 #Takes a pwrFrame and cutoff value.
 #Splits the frame by effect size,
 #returns the first value of x that intersects with the given y-intercept
-getXIntercepts <- function(pwrFrame,cutoff){
+getXIntercepts <- function(pwrFrame,power){
 	require(plyr)
-	daply(.data=pwrFrame,.(effectSize),.fun=function(x){
-		intercepts <- x[x$power >= cutoff & x$power <= (cutoff + .05),"df"][1]
+	xs <- daply(.data=pwrFrame,.(effectSize),.fun=function(x){
+		intercepts <- x[x$power >= power & x$power <= (power + .05),"df"][1]
 		return(intercepts)
 	})
+	return(xs)
 }
 
 getYIntercepts <- function(pwrFrame,dfs){
 	require(plyr)
-	daply(.data=pwrFrame,.(effectSize),.fun=function(x){
+	ys <- daply(.data=pwrFrame,.(effectSize),.fun=function(x){
 		intercepts <- x[x$df %in% dfs, "power"]
+		return(intercepts)
 	})
+	if(!is.null(dim(ys))){
+		ys <- as.numeric(ys)
+	}
+	return(ys)
 }
 #Functions to add power or df guides to the plot.
 addDfGuide <- function(powerPlot,power,pwrFrame){
@@ -80,6 +86,13 @@ addDfGuide <- function(powerPlot,power,pwrFrame){
 	p <- p + geom_vline(xintercept = getXIntercepts(pwrFrame,power),linetype=2) #Add vertical lines
 	p <- p + annotate(x=getXIntercepts(pwrFrame,power),geom="text",label=as.character(getXIntercepts(pwrFrame,power)),y=.1,angle=45)
 	return(p)
+}
+addPowerGuide <- function(powerPlot,dfs,pwrFrame){
+	p <- powerPlot
+	p <- p + geom_vline(xintercept=dfs,linetype=2)
+	p <- p + annotate(x=dfs,geom="text",label=as.character(dfs),y=.1,angle=45)
+	p <- p + geom_hline(yintercept=getYIntercepts(pwrFrame,dfs),linetype=2)
+	p <- p + annotate(x=-20,y=getYIntercepts(pwrFrame,dfs),geom="text",label=as.character(getYIntercepts(pwrFrame,dfs)),angle=45)
 }
 
 #Plots the power data.frame generated from createPwrFrame()
