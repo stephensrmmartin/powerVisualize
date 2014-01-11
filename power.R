@@ -69,6 +69,7 @@ createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,t
 		stop("Test must be specified. Possible values: f2, r2, d")
 	}
 	ds <- data.frame(effectSize=effects,df=dfs,power=pwr)
+	attr(ds,which="test") <- test
 	return(ds)	
 }
 #Takes a pwrFrame and cutoff value.
@@ -128,7 +129,7 @@ plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 		}
 	}
 	p <- p + theme_classic()
-	p <- p + labs(x="Degrees of freedom",y='Power',title='Power Analysis',colour='Effect Size')
+	p <- p + labs(x="Degrees of freedom",y='Power',title='Power Analysis',colour=paste0("Effect Size ",'(',attr(pwrFrame,which='test'),')'))
 	return(p)
 }
 
