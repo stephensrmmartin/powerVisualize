@@ -6,6 +6,9 @@ require(pwr)
 
 #Creates array of power values given f^2-df pairs (power of .03 with 50; .03 with 51, etc)
 genPwrArray.f2 <- function(explodedEff,explodedDfs,dfNumerator,sig.level=.05){
+	if(is.null(dfNumerator)){
+		stop("Must specify the numerator for the F-test (k-1 groups, or k predictors)")
+	}
 	pwr <- pwr.f2.test(u=dfNumerator,v=explodedDfs,f2=explodedEff,sig.level=sig.level,power=NULL)$power
 	return(pwr)
 }
@@ -30,10 +33,13 @@ explodeEffDfs <- function(effectSizes,dfs){
 #	.02		100	.80
 #	.02		1000	.99
 createPwrFrame <- function(effectSizes,dfs,dfNumerator=NULL,sig.level=.05,test="f2"){
+	if(length(dfs) == 1){ ##Allow it to take one argument, and consider it max sample size.
+		dfs <- seq(1,dfs,1)
+	}
 	exploded <- explodeEffDfs(effectSizes,dfs)
-	effects <- exploded$effect
-	dfs <- exploded$df
-	rm(exploded)
+	effects <- exploded$effect #create an ef for each df
+	dfs <- exploded$df #create a df for each ef
+	rm(exploded) #kill the exploded list to free mem
 	if(test=="f2"){
 	pwr <- genPwrArray.f2(effects,dfs,dfNumerator,sig.level)
 	}
@@ -67,19 +73,26 @@ getYIntercepts <- function(pwrFrame,dfs){
 	})
 }
 #Functions to add power or df guides to the plot.
+addDfGuide <- function(powerPlot,power,pwrFrame){
+	p <- powerPlot
+	p <- p + geom_hline(yintercept=power,linetype=2) #Add horizontal line
+	p <- p + annotate(x=-20,y=power,geom="text",label=as.character(power),angle=45) #Add power label
+	p <- p + geom_vline(xintercept = getXIntercepts(pwrFrame,power),linetype=2) #Add vertical lines
+	p <- p + annotate(x=getXIntercepts(pwrFrame,power),geom="text",label=as.character(getXIntercepts(pwrFrame,power)),y=.1,angle=45)
+	return(p)
+}
 
 #Plots the power data.frame generated from createPwrFrame()
 #Will treat effectSize as factor if fewer than 8 effectsizes are given
 #Otherwise, the whole thing is a scatterplot.
-plotPower <- function(pwrFrame,guides=TRUE,cutoff=.8){
+##v2: Removed scatterplot, because it's useless.
+##: Will take either a power value and give dfs, or dfs and give power values
+plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 	if(length(unique(pwrFrame$effectSize)) < 8){
 		pwrFrame$effectSize <- factor(pwrFrame$effectSize)
 		p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,group=effectSize,geom="line")
-		if(guides==TRUE){
-			p <- p + geom_hline(yintercept=cutoff,linetype=2)
-			p <- p + annotate(x=-20,y=cutoff,geom="text",label=as.character(cutoff),angle=45)
-			p <- p + geom_vline(xintercept = getXIntercepts(pwrFrame,cutoff),linetype=2)
-			p <- p + annotate(x=getXIntercepts(pwrFrame,cutoff),geom="text",label=as.character(getXIntercepts(pwrFrame,cutoff)),y=.1,angle=45)
+		if(guides==TRUE & !is.null(power)){
+			p <- addDfGuide(p,power,pwrFrame)
 		}
 	}
 	else{
@@ -88,5 +101,4 @@ plotPower <- function(pwrFrame,guides=TRUE,cutoff=.8){
 	p <- p + theme_classic()
 	p <- p + labs(x="Degrees of freedom",y='Power',title='Power Analysis',colour='Effect Size')
 	return(p)
-
 }
