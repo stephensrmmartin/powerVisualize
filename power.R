@@ -102,3 +102,8 @@ plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 	p <- p + labs(x="Degrees of freedom",y='Power',title='Power Analysis',colour='Effect Size')
 	return(p)
 }
+
+#Converts r2 to f2; f2 is the ratio of [relatively] explained variance to unexplained variance
+r2tof2 <- function(r2,r2baseModel=0){
+	f2 <- (r2 - r2baseModel)/(1-r2)
+}
