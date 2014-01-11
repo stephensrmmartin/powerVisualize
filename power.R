@@ -4,8 +4,8 @@
 require(ggplot2)
 require(pwr)
 
-#Creates array of power values given effectsize-df pairs (power of .03 with 50; .03 with 51, etc)
-genPwrArray <- function(explodedEff,explodedDfs,dfNumerator,sig.level=.05){
+#Creates array of power values given f^2-df pairs (power of .03 with 50; .03 with 51, etc)
+genPwrArray.f2 <- function(explodedEff,explodedDfs,dfNumerator,sig.level=.05){
 	pwr <- pwr.f2.test(u=dfNumerator,v=explodedDfs,f2=explodedEff,sig.level=sig.level,power=NULL)$power
 	return(pwr)
 }
@@ -29,12 +29,23 @@ explodeEffDfs <- function(effectSizes,dfs){
 #	.02		10	.25
 #	.02		100	.80
 #	.02		1000	.99
-createPwrFrame <- function(effectSizes,dfs,dfNumerator=4,sig.level=.05){
+createPwrFrame <- function(effectSizes,dfs,dfNumerator=NULL,sig.level=.05,test="f2"){
 	exploded <- explodeEffDfs(effectSizes,dfs)
 	effects <- exploded$effect
 	dfs <- exploded$df
 	rm(exploded)
-	pwr <- genPwrArray(effects,dfs,dfNumerator,sig.level)
+	if(test=="f2"){
+	pwr <- genPwrArray.f2(effects,dfs,dfNumerator,sig.level)
+	}
+	else if(test == "r2"){
+	pwr <- genPwrArray.r2(effects,dfs,sig.level)
+	}
+	else if(test == "d"){
+	pwr <- genPwrArray.d(effects,dfs,sig.level)
+	}
+	else{
+		stop("Test must be specified. Possible values: f2, r2, d")
+	}
 	ds <- data.frame(effectSize=effects,df=dfs,power=pwr)
 	return(ds)	
 }
@@ -55,6 +66,7 @@ getYIntercepts <- function(pwrFrame,dfs){
 		intercepts <- x[x$df %in% dfs, "power"]
 	})
 }
+#Functions to add power or df guides to the plot.
 
 #Plots the power data.frame generated from createPwrFrame()
 #Will treat effectSize as factor if fewer than 8 effectsizes are given
