@@ -136,5 +136,6 @@ plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 #Converts r2 to f2; f2 is the ratio of [relatively] explained variance to unexplained variance
 r2tof2 <- function(r2,r2baseModel=0){
 	f2 <- (r2 - r2baseModel)/(1-r2)
+	return(f2)
 }
 
