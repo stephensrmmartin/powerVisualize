@@ -44,7 +44,15 @@ createPwrFrame <- function(effectSizes,dfs,dfNumerator=4,sig.level=.05){
 getXIntercepts <- function(pwrFrame,cutoff){
 	require(plyr)
 	daply(.data=pwrFrame,.(effectSize),.fun=function(x){
-		return(x[x$power >= cutoff & x$power <= (cutoff + .05),"df"][1])
+		intercepts <- x[x$power >= cutoff & x$power <= (cutoff + .05),"df"][1]
+		return(intercepts)
+	})
+}
+
+getYIntercepts <- function(pwrFrame,dfs){
+	require(plyr)
+	daply(.data=pwrFrame,.(effectSize),.fun=function(x){
+		intercepts <- x[x$df %in% dfs, "power"]
 	})
 }
 
