@@ -23,7 +23,7 @@ genPwrArray.r2 <- function(explodedEff,explodedDfs,sig.level=.05,alternative="tw
 	return(pwr)
 }
 #Creates array of power values given d-df values
-genPwrArray.d <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
+genPwrArray.d <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided",type="two.sample"){
 	pwr <- pwr.t.test(n=explodedDfs,d=explodedEff,sig.level=sig.level,alternative=alternative)$power
 	return(pwr)
 }
@@ -48,7 +48,7 @@ explodeEffDfs <- function(effectSizes,dfs){
 #	.02		10	.25
 #	.02		100	.80
 #	.02		1000	.99
-createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2",alternative="two.sided"){
+createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2",alternative="two.sided",type="two.sample"){
 	if(length(dfs) == 1){ ##Allow it to take one argument, and consider it max sample size.
 		dfs <- seq(1,dfs,1)
 	}
@@ -63,7 +63,7 @@ createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,t
 	pwr <- genPwrArray.r2(effects,dfs,sig.level,alternative)
 	}
 	else if(test == "d"){
-	pwr <- genPwrArray.d(effects,dfs,sig.level)
+	pwr <- genPwrArray.d(effects,dfs,sig.level=sig.level,alternative=alternative,type=type)
 	}
 	else{
 		stop("Test must be specified. Possible values: r,f2, r2, d")
