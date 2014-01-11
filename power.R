@@ -32,7 +32,7 @@ explodeEffDfs <- function(effectSizes,dfs){
 #	.02		10	.25
 #	.02		100	.80
 #	.02		1000	.99
-createPwrFrame <- function(effectSizes,dfs,dfNumerator=NULL,sig.level=.05,test="f2"){
+createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2"){
 	if(length(dfs) == 1){ ##Allow it to take one argument, and consider it max sample size.
 		dfs <- seq(1,dfs,1)
 	}
