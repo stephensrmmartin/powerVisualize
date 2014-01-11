@@ -123,7 +123,7 @@ plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 		if(!is.null(power)){
 		p <- addDfGuide(p,power,pwrFrame)
 		}
-		else if(!is.null(df)){
+		if(!is.null(df)){
 		p <- addPowerGuide(p,df,pwrFrame)
 		}
 	}
