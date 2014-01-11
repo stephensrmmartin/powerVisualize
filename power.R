@@ -66,7 +66,7 @@ createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,t
 	pwr <- genPwrArray.d(effects,dfs,sig.level)
 	}
 	else{
-		stop("Test must be specified. Possible values: f2, r2, d")
+		stop("Test must be specified. Possible values: r,f2, r2, d")
 	}
 	ds <- data.frame(effectSize=effects,df=dfs,power=pwr)
 	attr(ds,which="test") <- test
