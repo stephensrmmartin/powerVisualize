@@ -12,6 +12,22 @@ genPwrArray.f2 <- function(explodedEff,explodedDfs,dfNumerator,sig.level=.05){
 	pwr <- pwr.f2.test(u=dfNumerator,v=explodedDfs,f2=explodedEff,sig.level=sig.level,power=NULL)$power
 	return(pwr)
 }
+#Creates array of power values given r-df values
+genPwrArray.r <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
+	pwr <- pwr.r.test(n=explodedDfs,r=explodedEff,sig.level=sig.level,alternative=alternative)
+	return(pwr)
+}
+genPwrArray.r2 <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
+	explodedEff <- sqrt(explodedEff)
+	pwr <- pwr.r.test(n=explodedDfs,r=explodedEff,sig.level=sig.level,alternative=alternative)
+	return(pwr)
+}
+#Creates array of power values given d-df values
+genPwrArray.d <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
+	pwr <- pwr.t.test(n=explodedDfs,d=explodedEff,sig.level=sig.level,alternative=alternative)
+	return(pwr)
+}
+
 
 #Returns list of 'exploded' effectSize array and df array.
 #Namely, given an array of possible ef's and df's, it will duplicate ef's for each possible df,
@@ -120,3 +136,4 @@ plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 r2tof2 <- function(r2,r2baseModel=0){
 	f2 <- (r2 - r2baseModel)/(1-r2)
 }
+
