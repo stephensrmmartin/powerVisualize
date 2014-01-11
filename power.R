@@ -14,17 +14,17 @@ genPwrArray.f2 <- function(explodedEff,explodedDfs,dfNumerator,sig.level=.05){
 }
 #Creates array of power values given r-df values
 genPwrArray.r <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
-	pwr <- pwr.r.test(n=explodedDfs,r=explodedEff,sig.level=sig.level,alternative=alternative)
+	pwr <- pwr.r.test(n=explodedDfs,r=explodedEff,sig.level=sig.level,alternative=alternative)$power
 	return(pwr)
 }
 genPwrArray.r2 <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
 	explodedEff <- sqrt(explodedEff)
-	pwr <- pwr.r.test(n=explodedDfs,r=explodedEff,sig.level=sig.level,alternative=alternative)
+	pwr <- pwr.r.test(n=explodedDfs,r=explodedEff,sig.level=sig.level,alternative=alternative)$power
 	return(pwr)
 }
 #Creates array of power values given d-df values
 genPwrArray.d <- function(explodedEff,explodedDfs,sig.level=.05,alternative="two.sided"){
-	pwr <- pwr.t.test(n=explodedDfs,d=explodedEff,sig.level=sig.level,alternative=alternative)
+	pwr <- pwr.t.test(n=explodedDfs,d=explodedEff,sig.level=sig.level,alternative=alternative)$power
 	return(pwr)
 }
 
@@ -48,7 +48,7 @@ explodeEffDfs <- function(effectSizes,dfs){
 #	.02		10	.25
 #	.02		100	.80
 #	.02		1000	.99
-createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2"){
+createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2",alternative="two.sided"){
 	if(length(dfs) == 1){ ##Allow it to take one argument, and consider it max sample size.
 		dfs <- seq(1,dfs,1)
 	}
@@ -60,7 +60,7 @@ createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,t
 	pwr <- genPwrArray.f2(effects,dfs,dfNumerator,sig.level)
 	}
 	else if(test == "r2"){
-	pwr <- genPwrArray.r2(effects,dfs,sig.level)
+	pwr <- genPwrArray.r2(effects,dfs,sig.level,alternative)
 	}
 	else if(test == "d"){
 	pwr <- genPwrArray.d(effects,dfs,sig.level)
