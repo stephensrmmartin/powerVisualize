@@ -76,7 +76,7 @@ getYIntercepts <- function(pwrFrame,dfs){
 	if(!is.null(dim(ys))){
 		ys <- as.numeric(ys)
 	}
-	return(ys)
+	return(round(ys,digits=2))
 }
 #Functions to add power or df guides to the plot.
 addDfGuide <- function(powerPlot,power,pwrFrame){
@@ -90,7 +90,7 @@ addDfGuide <- function(powerPlot,power,pwrFrame){
 addPowerGuide <- function(powerPlot,dfs,pwrFrame){
 	p <- powerPlot
 	p <- p + geom_vline(xintercept=dfs,linetype=2)
-	p <- p + annotate(x=dfs,geom="text",label=as.character(dfs),y=.1,angle=45)
+	p <- p + annotate(x=dfs,geom="text",label=as.character(dfs),y=1,angle=45)
 	p <- p + geom_hline(yintercept=getYIntercepts(pwrFrame,dfs),linetype=2)
 	p <- p + annotate(x=-20,y=getYIntercepts(pwrFrame,dfs),geom="text",label=as.character(getYIntercepts(pwrFrame,dfs)),angle=45)
 }
@@ -108,8 +108,7 @@ plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 		p <- addDfGuide(p,power,pwrFrame)
 		}
 		else if(!is.null(df)){
-			stop("Not yet implemented")
-		#p <- addPowerGuide(p,df,pwrFrame)
+		p <- addPowerGuide(p,df,pwrFrame)
 		}
 	}
 	p <- p + theme_classic()
