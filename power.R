@@ -48,9 +48,13 @@ explodeEffDfs <- function(effectSizes,dfs){
 #	.02		10	.25
 #	.02		100	.80
 #	.02		1000	.99
-createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2",alternative="two.sided",type="two.sample"){
+createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,test="f2",alternative="two.sided",type="two.sample",standard=FALSE){
 	if(length(dfs) == 1){ ##Allow it to take one argument, and consider it max sample size.
 		dfs <- seq(1,dfs,1)
+	}
+	if(standard == TRUE){
+		es <- cohenES()
+		effectSizes <- c(effectSizes,es$es[es$test == test]
 	}
 	exploded <- explodeEffDfs(effectSizes,dfs)
 	effects <- exploded$effect #create an ef for each df
@@ -139,3 +143,7 @@ r2tof2 <- function(r2,r2baseModel=0){
 	return(f2)
 }
 
+cohenES(){
+	es <- data.frame(test=rep(c("f2","r2","r","d"),each=3),es=c(.02,.15,.35,.01,.09,.25,.1,.3,.5,.2,.5,.8))
+	return(es)
+}
