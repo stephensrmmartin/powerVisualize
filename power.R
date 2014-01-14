@@ -69,6 +69,9 @@ createPwrFrame <- function(effectSizes,dfs=1000,dfNumerator=NULL,sig.level=.05,t
 	else if(test == "d"){
 	pwr <- genPwrArray.d(effects,dfs,sig.level=sig.level,alternative=alternative,type=type)
 	}
+	else if(test == 'r'){
+	pwr <- genPwrArray.r(effects,dfs,sig.level,alternative)
+	}
 	else{
 		stop("Test must be specified. Possible values: r,f2, r2, d")
 	}
