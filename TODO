@@ -3,5 +3,6 @@ Get rid of any redundancies.
 Add logic for error-checking
 
 Add table output with some power values
+Add functions for getting pdf or svg; this is primarily for use in shiny.
 
 Documentation
