@@ -1,8 +1,11 @@
-Clean-up code.
-Get rid of any redundancies.
 Add logic for error-checking
 
 Add table output with some power values
-Add functions for getting pdf or svg; this is primarily for use in shiny.
+
+Add ability to create guides for multiple values of power and df.
+	-This is difficult.
+	-For df guides, The issue is finding the x intercepts for each power value.
+	-For power guides, the issue is creating the correct mapping() in ggplot.
+Colorize the guide lines by power/df specified.
 
 Documentation

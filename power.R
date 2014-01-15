@@ -105,18 +105,39 @@ getYIntercepts <- function(pwrFrame,dfs){
 #Functions to add power or df guides to the plot.
 addDfGuide <- function(powerPlot,power,pwrFrame){
 	p <- powerPlot
-	p <- p + geom_hline(yintercept=power,linetype=2) #Add horizontal line
-	p <- p + annotate(x=-20,y=power,geom="text",label=as.character(power),angle=45) #Add power label
-	p <- p + geom_vline(xintercept = getXIntercepts(pwrFrame,power),linetype=2) #Add vertical lines
-	p <- p + annotate(x=getXIntercepts(pwrFrame,power),geom="text",label=as.character(getXIntercepts(pwrFrame,power)),y=.1,angle=45)
+	xIntercepts <- getXIntercepts(pwrFrame=pwrFrame,power=power)
+	p <- p + geom_line(data=data.frame(df=pwrFrame$df,power=power),
+			   mapping=aes(x=df,y=power,group=NULL,color=NULL),
+			   linetype=2)
+	p <- p + annotate(x=max(pwrFrame$df)+10,
+			  y=power,geom="text",
+			  label=as.character(power),
+			  angle=45) #Add power label
+	p <- p + geom_line(data=data.frame(x=rep(xIntercepts,each=2),y=c(0,1),group=factor(rep(xIntercepts,each=2))),
+			   aes(x=x,y=y,group=group,color=NULL),
+			   linetype=2)
+	p <- p + annotate(x=xIntercepts,
+			  geom="text",
+			  label=as.character(xIntercepts),
+			  y=1,
+			  angle=45)
 	return(p)
 }
 addPowerGuide <- function(powerPlot,dfs,pwrFrame){
 	p <- powerPlot
-	p <- p + geom_vline(xintercept=dfs,linetype=2)
+	yIntercepts <- getYIntercepts(pwrFrame,dfs)
+#	p <- p + geom_vline(xintercept=dfs,linetype=2)
+	p <- p + geom_line(data=data.frame(x=rep(dfs,each=2),
+					   y=c(0,1),
+					   group=factor(rep(dfs,each=2))),
+			   aes(x=x,y=y,group=group,color=NULL),
+			   linetype=2)
 	p <- p + annotate(x=dfs,geom="text",label=as.character(dfs),y=1,angle=45)
-	p <- p + geom_hline(yintercept=getYIntercepts(pwrFrame,dfs),linetype=2)
-	p <- p + annotate(x=-20,y=getYIntercepts(pwrFrame,dfs),geom="text",label=as.character(getYIntercepts(pwrFrame,dfs)),angle=45)
+#	p <- p + geom_hline(yintercept=getYIntercepts(pwrFrame,dfs),linetype=2)
+	p <- p + geom_line(data=data.frame(x=pwrFrame$df,y=yIntercepts,group=factor(yIntercepts)),
+			    aes(x=x,y=y,group=group,color=NULL),
+			    linetype=2)
+	p <- p + annotate(x=max(pwrFrame$df),y=yIntercepts,geom="text",label=as.character(yIntercepts),angle=45)
 }
 
 #Plots the power data.frame generated from createPwrFrame()
