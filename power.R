@@ -150,6 +150,7 @@ addPowerGuide <- function(powerPlot,dfs,pwrFrame){
 plotPower <- function(pwrFrame,guides=TRUE,power=NULL,df=NULL){
 	pwrFrame$effectSize <- factor(pwrFrame$effectSize)
 	p <- qplot(data=pwrFrame,x=df,y=power,color=effectSize,group=effectSize,geom="line")
+	p <- p + scale_y_continuous(limits=c(0,1))
 	if(guides==TRUE){
 		if(!is.null(power)){
 		p <- addDfGuide(p,power,pwrFrame)
