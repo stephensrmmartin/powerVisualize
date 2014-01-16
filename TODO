@@ -6,6 +6,7 @@ Add ability to create guides for multiple values of power and df.
 	-This is difficult.
 	-For df guides, The issue is finding the x intercepts for each power value.
 	-For power guides, the issue is creating the correct mapping() in ggplot.
+		-Try just making a mapping of min(df) to max(df), with y=yIntercept, group=yIntercept
 Colorize the guide lines by power/df specified.
 
 Documentation

@@ -134,7 +134,9 @@ addPowerGuide <- function(powerPlot,dfs,pwrFrame){
 			   linetype=2)
 	p <- p + annotate(x=dfs,geom="text",label=as.character(dfs),y=1,angle=45)
 #	p <- p + geom_hline(yintercept=getYIntercepts(pwrFrame,dfs),linetype=2)
-	p <- p + geom_line(data=data.frame(x=pwrFrame$df,y=yIntercepts,group=factor(yIntercepts)),
+	p <- p + geom_line(data=data.frame(x=c(min(pwrFrame$df),max(pwrFrame$df)),
+					   y=rep(yIntercepts,each=2),
+					   group=factor(rep(yIntercepts,each=2))),
 			    aes(x=x,y=y,group=group,color=NULL),
 			    linetype=2)
 	p <- p + annotate(x=max(pwrFrame$df),y=yIntercepts,geom="text",label=as.character(yIntercepts),angle=45)
